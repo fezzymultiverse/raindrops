@@ -1,0 +1,14 @@
+{
+  "appId": "com.fezzy.raindrops",
+  "appName": "Raindrops",
+  "webDir": "www",
+  "backgroundColor": "#000000",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#000000"
+  },
+  "plugins": {
+    "CapacitorHttp": { "enabled": true },
+    "LocalNotifications": { "smallIcon": "ic_stat_raindrop", "iconColor": "#FF6B00" }
+  }
+}

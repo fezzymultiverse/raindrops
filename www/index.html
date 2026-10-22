@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Raindrops</title>
+<meta name="theme-color" content="#000000"><link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css"></head><body>
+<div id="wall"></div><canvas id="bg"></canvas><div id="edge"></div><div id="bh"></div>
+<div id="app">
+<header>
+<div class="logo"><svg class="paw" viewBox="0 0 64 64"><ellipse cx="32" cy="42" rx="14" ry="11"/><ellipse cx="14" cy="28" rx="6" ry="8"/><ellipse cx="26" cy="17" rx="6" ry="8"/><ellipse cx="40" cy="17" rx="6" ry="8"/><ellipse cx="52" cy="28" rx="6" ry="8"/></svg><div>Raindrops<small>FEZZY · BOJACK · STRATEGY OVER IMPULSE</small></div></div>
+<button class="hb" id="bSide">♪</button><button class="hb" id="bTheme">🎨</button>
+</header>
+<div class="tabs"><div class="tab on" data-p="rec">Record</div><div class="tab" data-p="mixer">Mixer</div><div class="tab" data-p="rack">Mix Rack</div><div class="tab" data-p="fx">Effects</div><div class="tab" data-p="lib">Library</div><div class="tab" data-p="ai">Studio AI</div><div class="tab" data-p="notes">Notes</div></div>
+
+<div class="panel on" id="p-rec">
+<div class="card"><canvas id="wave"></canvas>
+<div class="ri"><div class="time" id="time">00:00.0</div><div class="st"><div class="dot" id="dot"></div><span id="stt">Ready</span></div></div></div>
+<div class="ctl"><button class="sub" id="bPlay" disabled>▶</button><button class="big" id="bRec"><i></i></button><button class="sub" id="bStop" disabled>■</button></div>
+<div class="card"><div class="ct">Rap-Along</div><button class="btn aigo" id="bRap">🎤 Open Rap-Along mode</button><p class="hint">Full-screen lyrics for your backing track. Tap a line to jump there, then record from that verse.</p></div>
+<div class="card"><div class="ct">Recording track</div><div class="chips" id="trk"></div>
+<div id="adBaseW" class="hidden" style="margin-top:12px"><select id="adBase" class="mxsel"></select></div>
+<p class="hint" id="trkH"></p><button class="btn g aiopen" id="aiAdBtn" style="margin-top:12px"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Ad-lib ideas from AI</button></div>
+<div class="card"><div class="ct">Backing track</div>
+<div class="item"><div class="n" id="bgName">Pick one from Library — it records with you</div></div>
+<div class="row"><div class="lb"><span>Track volume</span><b id="bgv">70%</b></div><input type="range" id="bgVol" min="0" max="100" value="70"></div>
+<div class="row"><div class="lb"><span>Voice sync (ms)</span><b id="syv">0</b></div><input type="range" id="sy" min="-300" max="600" step="10" value="0"></div>
+<div class="cr"><span>Play track while recording</span><div class="sw on" id="swBg"></div></div>
+<div class="cr" style="margin-top:12px"><span>Speaker mode (cancel song from mic)</span><div class="sw" id="swSp"></div></div>
+<p class="hint">Recording is always your raw mic. When you stop, the take plays back in the Mixer tab. Headphones give the cleanest take. Use Speaker mode only if the song plays out loud. If your voice sits late against the track on playback, move Voice sync up.</p></div>
+<div class="card"><div class="ct">Permissions + background</div><button class="btn g" id="bPerm">Check mic + notifications</button>
+<div class="btnrow" style="margin-top:8px"><button class="btn" id="bBatt">Allow background</button><button class="btn g" id="bSet">App settings</button></div><p class="hint" id="battS" style="margin-top:10px"></p></div>
+<div class="card"><div class="ct">Fix + diagnose</div><button class="btn" id="bDiag">Check YouTube, Deezer, Audius, lyrics</button><div class="btnrow" style="margin-top:8px"><button class="btn g" id="bDiagCopy">Copy report</button><button class="btn g" id="bDiagClr">Clear log</button></div><pre class="hint" id="diagOut" style="white-space:pre-wrap;margin-top:10px;user-select:text;-webkit-user-select:text;font-family:inherit"></pre></div>
+</div>
+
+<div class="panel" id="p-mixer"></div>
+<div class="panel" id="p-rack"></div>
+<div class="hidden" id="p-voice">
+<div class="card"><div class="ct">Presets</div><p class="hint">Presets and effects are applied when you play or export a take. Recording is always raw.</p><div class="chips" id="vp"></div></div>
+<div class="card" id="vs"></div>
+</div>
+
+<div class="panel" id="p-fx">
+<div class="card hidden"><div class="ct">Voice effect</div><div class="chips" id="fxc"></div>
+<div class="row" style="margin-top:14px"><div class="lb"><span>Intensity</span><b id="fai">50%</b></div><input type="range" id="fa" min="0" max="100" value="50"></div>
+<div class="row"><div class="lb"><span>Wet / dry</span><b id="fmv">50%</b></div><input type="range" id="fm" min="0" max="100" value="50"></div></div>
+<div class="card"><div class="ct">Edge lighting</div><div class="chips" id="edc"></div>
+<div class="row" style="margin-top:14px"><div class="lb"><span>Speed</span><b id="esv">Level 5</b></div><input type="range" id="es" min="1" max="10" value="5"></div>
+<div class="row"><div class="lb"><span>Thickness</span><b id="ewv">3px</b></div><input type="range" id="ew" min="2" max="12" value="3"></div>
+<div class="row"><div class="lb"><span>Glow</span><b id="egv">6px</b></div><input type="range" id="eg" min="0" max="20" value="6"></div>
+<div class="cr" style="margin-bottom:14px"><span>Reverse direction</span><div class="sw" id="erv"></div></div>
+<div class="ct">Colours</div><div class="chips" id="ecm"></div>
+<div id="ecc" class="hidden"><div class="chips" id="esw" style="margin:12px 0"></div><div class="btnrow"><label class="pick">Colour 1<input type="color" id="ec1i"></label><label class="pick">Colour 2<input type="color" id="ec2i"></label></div></div></div>
+<div class="card"><div class="ct">Floating background</div><div class="chips" id="bgc"></div></div>
+</div>
+
+<div class="panel" id="p-lib">
+<div class="card"><div class="ct"><span>Music library</span><b id="sc" style="color:var(--accent)">0</b></div>
+<div class="btnrow"><button class="btn" id="bScan">Scan files</button><button class="btn g" id="bFolder">Scan folder</button></div>
+<button class="btn g" id="bDup" style="margin-top:8px">Find duplicates</button>
+<button class="btn g aiopen" id="aiBeatBtn" style="margin-top:8px"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Pick a beat with AI</button>
+<input type="file" id="fScan" accept="audio/*" multiple hidden><input type="file" id="fFolder" webkitdirectory multiple hidden>
+<input type="text" id="q" placeholder="Search songs…" style="margin:12px 0"><div id="songs"><p style="color:var(--m);font-size:13px">No songs yet. Scan files or a folder.</p></div></div>
+<div class="card dzcard"><div class="ct"><span>Deezer</span><b class="dzb">S.O.I. × Bojack</b></div>
+<div class="btnrow"><input type="text" id="dzQ" placeholder="Search song or artist on Deezer…"><button class="ib" id="dzGo" style="width:auto;padding:0 14px">Go</button></div>
+<div class="chips" style="margin-top:10px"><button class="chip" data-dz="rap">Rap chart</button><button class="chip" data-dz="top">Top chart</button></div>
+<div id="dzOut" style="margin-top:10px"></div><p class="hint">▶ plays a 30 s preview. ＋ finds the full song on YouTube (Android app) and saves it with Deezer's title, artist and cover.</p></div>
+<div class="card"><div class="ct"><span>Stream music (Audius)</span></div>
+<div class="btnrow"><input type="text" id="stQ" placeholder="Search song or artist…"><button class="ib" id="stGo" style="width:auto;padding:0 14px">Go</button></div>
+<div id="stOut" style="margin-top:10px"></div><p class="hint">▶ previews. ＋ saves it into your library so you can record over it and export.</p>
+<div class="ct" style="margin:16px 0 8px">YouTube (Android app)</div><div class="btnrow"><input type="text" id="yQ" placeholder="Search YouTube songs…"><button class="ib" id="yGo" style="width:auto;padding:0 14px">Go</button></div><div class="chips" id="yK" style="margin-top:10px"><div class="chip on" data-k="both">Both</div><div class="chip" data-k="music_songs">Songs</div><div class="chip" data-k="videos">Videos</div></div><div id="yOut" style="margin-top:10px"></div>
+<div class="btnrow" style="margin-top:10px"><input type="text" id="stU" placeholder="Paste a YouTube or direct audio link…"><button class="ib" id="stUGo" style="width:auto;padding:0 14px">Add</button></div></div>
+<div class="card"><div class="ct"><span>My recordings</span><b id="rc" style="color:var(--accent)">0</b></div><div class="cr" style="margin-bottom:12px;font-size:13px"><span>Play with its backing track</span><div class="sw on" id="swTk"></div></div><div id="recs"></div></div>
+</div>
+
+<div class="panel" id="p-ai">
+<div class="aist"><div class="dot" id="aiDot"></div><div id="aiStT"></div><button class="aibtn" id="aiStB">Settings</button></div>
+<div class="aiseg" id="aiSeg" role="tablist" style="--i:0"><i class="aithumb"></i><button role="tab" data-m="adlib" class="on">Ad-libs</button><button role="tab" data-m="beat">Beats</button><button role="tab" data-m="chat">Chat</button></div>
+
+<div id="ai-adlib" class="aimode">
+<div class="card"><div class="ct">The line you are recording over</div>
+<textarea class="pad" id="aiLine" placeholder="Type or paste a line"></textarea>
+<div class="btnrow" style="margin-top:8px"><button class="aibtn" id="aiUseLy">Use current lyric</button><button class="aibtn" id="aiUseNote">Use line from Notes</button></div>
+<div class="ct" style="margin:16px 0 10px">Vibe</div><div class="chips" id="aiVibe"></div>
+<button class="btn aigo" id="aiAdGo" style="margin-top:16px"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Get ad-libs</button></div>
+<div id="aiAdOut"></div></div>
+
+<div id="ai-beat" class="aimode hidden">
+<div class="card"><div class="ct">What are you writing about? (optional)</div>
+<textarea class="pad" id="aiBrief" placeholder="Example: a song about missing someone I lost" style="min-height:86px"></textarea>
+<div class="ct" style="margin:16px 0 10px">Mood</div><div class="chips" id="aiMood"></div>
+<div class="ct" style="margin:16px 0 10px">Tempo</div><div class="chips" id="aiTempo"></div>
+<button class="btn aigo" id="aiBeatGo" style="margin-top:16px"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Pick my beats</button>
+<p class="hint">Picks come from your Library first, then search ideas you can run on Audius.</p></div>
+<div id="aiBeatOut"></div></div>
+
+<div id="ai-chat" class="aimode hidden">
+<div class="card"><div class="aichat" id="aiLog"></div>
+<div class="chips" id="aiQuick" style="margin-bottom:10px"><div class="chip" data-q="Write me a short hook about starting over">Write a hook</div><div class="chip" data-q="Give me tips to make my flow hit harder">Fix my flow</div><div class="chip" data-q="How do I record cleaner vocals on a phone?">Cleaner vocals</div></div>
+<div class="btnrow"><input type="text" id="aiChatIn" placeholder="Ask your studio partner" enterkeyhint="send"><button class="ib aisend" id="aiSend" aria-label="Send" style="width:44px;height:44px;flex-shrink:0"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg></button></div>
+<button class="aibtn hidden" id="aiClear" style="margin-top:10px">Clear chat</button></div></div>
+
+<details class="card aiset" id="aiSet"><summary>Gemini settings</summary>
+<div class="row" style="margin-top:14px"><div class="lb"><span>Gemini key</span></div>
+<div class="btnrow"><input type="password" id="aiKeyIn" placeholder="Paste your key" autocomplete="off" spellcheck="false"><button class="aibtn" id="aiKeyEye" style="flex-shrink:0">Show</button></div></div>
+<div class="row"><div class="lb"><span>Model</span></div><select id="aiModel" class="mxsel" style="margin-bottom:0"><option value="">Auto (newest Flash)</option></select></div>
+<div class="btnrow"><button class="btn" id="aiCheck">Check key</button><button class="btn g" id="aiKeyDel">Remove key</button></div>
+<p class="hint" id="aiSetMsg"></p>
+<p class="hint">The key stays on this phone. When you tap a button, the text you wrote (a lyric line, your brief, chat messages, or your song titles for beat picks) is sent to Google Gemini. Recordings and audio never leave the phone unless you switch on “Let Gemini hear a 30 s audio clip” in Gemini ears below.</p>
+<p class="hint" id="aiVer"></p></details>
+</div>
+
+<div class="panel" id="p-notes">
+<div class="card"><div class="ct">Notepad</div>
+<input type="text" id="nt" placeholder="Title" style="margin-bottom:8px"><textarea id="nb" placeholder="Write lyrics, ideas, plans…"></textarea>
+<div class="btnrow" style="margin-top:10px"><button class="btn" id="nSave">Save note</button><button class="btn g" id="nNew">New</button><button class="btn g" id="nDel">Delete</button></div></div>
+<div class="card"><div class="ct">Saved notes</div><div id="nl"></div></div>
+</div>
+<div class="foot">STRATEGY OVER IMPULSE · 🐾 BOJACK · FEZZY 999</div>
+</div>
+
+<audio id="aud" loop crossorigin="anonymous"></audio>
+
+<div id="side"><div class="np"><img id="art" alt=""><div class="nt"><div id="mt">Nothing loaded</div><div id="ma">Pick a song in Library</div></div></div>
+<div class="tp"><button class="ib" id="sPlay">▶</button><button class="ib" id="sStop">■</button><input type="range" id="sSeek" min="0" max="1000" value="0"><span id="sTime">0:00 / 0:00</span></div>
+<div class="chips" id="sv" style="margin:10px 0"><div class="chip on" data-v="lyr">Lyrics</div><div class="chip" data-v="vFind">Find</div><div class="chip" data-v="vBio">Artist</div></div>
+<div id="lyr"></div>
+<div id="vFind" class="hidden"><div class="btnrow"><input type="text" id="sq" placeholder="Song, artist…"><button class="ib" id="sGo" style="width:auto;padding:0 14px">Go</button></div><button class="btn g" id="sAuto" style="margin:8px 0">Auto-find for this track</button><div id="sres"></div><div class="ct" style="margin-top:10px">Recent searches</div><div class="chips" id="shist"></div></div>
+<div id="vBio" class="hidden"><div class="btnrow" style="margin-bottom:10px"><input type="text" id="bq" placeholder="Artist…"><button class="ib" id="bGo" style="width:auto;padding:0 14px">Go</button></div><div id="bioOut"></div></div>
+<button class="btn g aiopen" id="aiLineBtn" style="margin-top:10px"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Ad-libs for this line</button>
+<div class="btnrow" style="margin-top:10px"><button class="btn g" id="bLrc">Load lyrics file</button><button class="btn g" id="bX">Close</button></div><input type="file" id="fLrc" accept=".lrc,.txt" hidden></div>
+
+<div class="modal" id="dup"><div class="mc"><h2>Duplicate scanner</h2><p>Exact copies are ticked for removal. Similar songs are only suggestions, so tick them yourself. The first song of each group is kept, and takes that used a removed song switch to the kept one.</p><div id="dupBody"></div><div class="btnrow" style="margin-top:14px"><button class="btn" id="dupGo">Remove selected (0)</button><button class="btn g" id="dupX">Close</button></div></div></div>
+
+<div class="modal" id="exp"><div class="mc"><h2>Export</h2>
+<p>WAV and Video mix in your backing track and effects. Raw voice is the untouched recording. Video is a small 480p MP4, encoded fast when your phone supports it (otherwise rendered in real time, so keep the app open).</p>
+<div class="chips" id="ef" style="margin-bottom:12px"><div class="chip on" data-f="wav">Audio · WAV</div><div class="chip" data-f="raw">Audio · Raw voice</div><div class="chip" data-f="vid">Video</div></div>
+<input type="text" id="en" style="margin-bottom:12px">
+<div id="eOpts"><div class="cr" id="eTr" style="margin-bottom:10px"><span>Include backing track</span><div class="sw on" id="swEt"></div></div><div class="cr hidden" id="eAd" style="margin-bottom:10px"><span>Include ad-libs track</span><div class="sw on" id="swEa"></div></div><div class="cr" style="margin-bottom:12px"><span>Apply preset + effects</span><div class="sw" id="swEf"></div></div></div>
+<div class="btnrow"><input type="file" id="fArt" accept="image/*" hidden><button class="btn g" onclick="fArt.click()">Album art (optional)</button></div>
+<p id="ap" style="margin:10px 0 0"></p><p id="ep2" style="color:var(--accent)"></p>
+<div class="btnrow"><button class="btn" id="eGo">Save</button><button class="btn g" id="eSh">Share</button><button class="btn g" id="eX">Cancel</button></div></div></div>
+
+<div class="modal" id="tm"><div class="mc"><h2>Theme</h2><div class="sw3" id="tg"></div>
+<div class="sec">Juice WRLD themes · 999</div><div class="artg"><div class="artt" data-k="ggr"><b>Goodbye &amp; Good Riddance</b><small>rain · 999</small></div><div class="artt" data-k="pne"><b>The Party Never Ends</b><small>confetti · 999</small></div></div>
+<div class="sec">Wallpaper for this theme</div><div class="btnrow"><button class="btn" id="wAdd">Add my artwork</button><button class="btn g" id="wDel">Remove</button></div><input type="file" id="fWall" accept="image/*" hidden>
+<div class="row" style="margin-top:12px"><div class="lb"><span>Wallpaper brightness</span><b id="wdv">60%</b></div><input type="range" id="wd" min="10" max="100" value="60"></div>
+<div class="sec">Bobblehead</div><div class="cr" style="margin-bottom:12px"><span>Show him</span><div class="sw on" id="swBh"></div></div>
+<div class="ct">Outfit</div><div class="chips" id="bho"></div><div class="ct" style="margin-top:12px">Prop in hand</div><div class="chips" id="bhpc"></div>
+<div class="btnrow" style="margin-top:10px"><button class="btn g" id="pAdd">Use my own prop image</button></div><input type="file" id="fProp" accept="image/*" hidden>
+<div class="row" style="margin-top:12px"><div class="lb"><span>Size</span><b id="bsv">110px</b></div><input type="range" id="bs" min="60" max="200" value="110"></div>
+<button class="btn g" style="margin-top:14px" onclick="tm.classList.remove('show')">Close</button></div></div>
+
+<div class="modal" id="gate"><div class="mc"><h2>🌧 Raindrops</h2>
+<p>Needs your microphone to record, notifications to tell you when a take is saved, background play (Allow background button), and file access (the pickers in Library and Export) for your music and artwork.</p>
+<button class="btn" id="gOk">Allow microphone + notifications</button><button class="btn g" style="margin-top:8px" id="gNo">Later</button></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="diag.js"></script><script src="mp4mux.js"></script><script src="app.js"></script><script src="dupes.js"></script><script src="stream.js"></script><script src="free.js"></script><script src="deezer.js"></script><script src="mixer.js"></script><script src="latency.js"></script><script src="edge.js"></script><script src="bobble.js"></script><script src="themes.js"></script><script src="ai-core.js"></script><script src="ai.js"></script><script src="transport.js"></script><script src="ears.js"></script><script src="beatfx.js"></script><script src="rack.js"></script><script src="lyricsx.js"></script><script src="rapalong.js"></script><script src="native.js"></script></body></html>
