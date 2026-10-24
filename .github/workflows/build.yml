@@ -48,9 +48,9 @@ jobs:
         BT_DIR="$ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools/ | sort -V | tail -1)"
         UNSIGNED=$(ls android/app/build/outputs/apk/release/*-unsigned.apk | head -1)
         "$BT_DIR/zipalign" -p -f 4 "$UNSIGNED" aligned.apk
-        "$BT_DIR/apksigner" sign --ks my.keystore --ks-pass env:KEYSTORE_PASSWORD --ks-key-alias "$KEY_ALIAS" --out signed-app.apk aligned.apk
+        "$BT_DIR/apksigner" sign --ks my.keystore --ks-pass env:KEYSTORE_PASS --ks-key-alias "$KEY_ALIAS" --out signed-app.apk aligned.apk
       env:
-        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
     - name: Upload APK
